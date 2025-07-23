@@ -34,7 +34,7 @@ L.Icon.Default.mergeOptions({
 
 <style scoped>
     #map {
-        height: 50vh;
+        height: 100%;
         width: 100%;
         border-radius: 15px;
     }

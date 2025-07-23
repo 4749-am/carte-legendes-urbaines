@@ -7,6 +7,7 @@
 
 <style scoped>
 .about {
+  text-align: center;
   padding: 2rem;
 }
 </style>

@@ -1,9 +1,10 @@
 <script setup>
 import MapView from '@/components/MapView.vue'
+import LegendForm from '@/components/LegendForm.vue'
 </script>
 
 <template>
-  <div class="container">
+  <div class="home-container">
     <!-- Colonne gauche : Carte -->
     <div class="left">
       <MapView />
@@ -11,60 +12,29 @@ import MapView from '@/components/MapView.vue'
 
     <!-- Colonne droite : Formulaire -->
     <div class="right">
-      <h2>Ajoutez une légende</h2>
-      <form @submit.prevent="submitForm">
-        <label for="title">Titre</label>
-        <input id="title" type="text" placeholder="Titre de la légende" />
-
-        <label for="desc">Description</label>
-        <textarea id="desc" placeholder="Détails..."></textarea>
-
-        <button type="submit">Enregistrer</button>
-      </form>
+      <LegendForm />
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    submitForm() {
-      alert("Formulaire soumis !");
-    }
-  }
-}
-</script>
-
 <style scoped>
-.container {
-  display: flex;
+.home-container {
+  display: grid;
+  grid-template-columns: 7fr 2.5fr;
   gap: 2rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: 450px;
+  align-items: start;
 }
+
 .left {
-  flex: 2;
-}
-.right {
-  flex: 1;
-  background: #f5f5f5;
-  padding: 1rem;
-  border-radius: 10px;
-}
-form {
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
-input, textarea {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-button {
-  background: #2196f3;
-  color: white;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 5px;
-  cursor: pointer;
+
+.right {
+  height: 100%;
 }
 </style>
