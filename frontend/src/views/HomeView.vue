@@ -36,5 +36,8 @@ import LegendForm from '@/components/LegendForm.vue'
 
 .right {
   height: 100%;
+  overflow: visible; /* au cas où */
+  display: flex;
+  flex-direction: column;
 }
 </style>

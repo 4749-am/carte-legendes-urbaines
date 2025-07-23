@@ -33,7 +33,10 @@ function submitForm() {
 .legend-form h2 {
   margin: 0 0 1rem 0;
   font-weight: bold;
+  display: block !important;  /* force l'affichage */
+  opacity: 1 !important;      /* visible */
 }
+
 
 .legend-form form {
   display: flex;
