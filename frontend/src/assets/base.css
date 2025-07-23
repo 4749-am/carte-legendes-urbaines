@@ -15,14 +15,7 @@
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-}
-
-/* semantic color variables for this project */
-:root {
+  /* Couleurs par défaut */
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -30,10 +23,9 @@
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
+  /* Couleurs de texte */
+  --color-heading: #2c3e50; /* Bleu foncé pour titres */
+  --color-text: #2c3e50; /* Texte normal */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -45,11 +37,13 @@
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    /* Ici on force une vraie couleur blanche pour les titres en dark mode */
+    --color-heading: #ffffff;
+    --color-text: rgba(255, 255, 255, 0.9);
   }
 }
 
+/* Reset + style global */
 *,
 *::before,
 *::after {
@@ -83,4 +77,10 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Titres toujours bien contrastés */
+h1, h2, h3, h4 {
+  color: var(--color-heading) !important;
+  font-weight: bold;
 }
