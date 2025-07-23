@@ -1,15 +1,12 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h2>À propos</h2>
+    <p>Cette application affiche une carte interactive des légendes urbaines.</p>
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<style scoped>
+.about {
+  padding: 2rem;
 }
 </style>
