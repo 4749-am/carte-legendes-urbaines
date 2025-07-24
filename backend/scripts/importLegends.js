@@ -6,8 +6,8 @@ import Legend from "../src/models/Legend.js"; // modèle mongoose
 
 dotenv.config();
 
-// URL de la page Wikipédia
-const WIKI_URL = "https://fr.wikipedia.org/wiki/L%C3%A9gende_urbaine";
+const MONGO_URI = process.env.MONGODB_URI; // ✅ correspond à ton .env
+const WIKI_URL = process.env.WIKI_URL || "https://fr.wikipedia.org/wiki/Liste_de_l%C3%A9gendes_urbaines";
 
 async function fetchLegendsFromWikipedia() {
   console.log("📡 Récupération des légendes depuis Wikipédia...");
@@ -17,13 +17,19 @@ async function fetchLegendsFromWikipedia() {
 
   const legends = [];
 
-  // Exemple simple : récupérer les titres h2 de la page
-  $("h2 .mw-headline").each((_, el) => {
-    legends.push({
-      title: $(el).text().trim(),
-      description: `Extraite de Wikipédia: ${$(el).text().trim()}`,
-      source: WIKI_URL
-    });
+  // Sélectionne toutes les <li> dans le contenu principal
+  $("#mw-content-text ul li").each((_, el) => {
+    const link = $(el).find("a").first(); // premier lien dans le <li>
+    const title = link.text().trim();
+    const href = link.attr("href");
+
+    if (title && href && href.startsWith("/wiki/")) {
+      legends.push({
+        title,
+        description: `Voir plus : https://fr.wikipedia.org${href}`,
+        source: `https://fr.wikipedia.org${href}`
+      });
+    }
   });
 
   console.log(`✅ ${legends.length} légendes trouvées`);
@@ -32,18 +38,28 @@ async function fetchLegendsFromWikipedia() {
 
 async function saveLegendsToDB() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    console.log("🔗 Connexion à MongoDB...");
+    await mongoose.connect(MONGO_URI);
     console.log("✅ Connecté à MongoDB");
 
     const legends = await fetchLegendsFromWikipedia();
 
-    await Legend.insertMany(legends);
-    console.log(`✅ ${legends.length} légendes sauvegardées en base`);
+    if (legends.length === 0) {
+      console.warn("⚠️ Aucun résultat trouvé sur Wikipédia !");
+    } else {
+      console.log("🗑 Suppression des anciennes légendes...");
+      await Legend.deleteMany({}); // supprime les anciennes entrées
+
+      console.log("💾 Sauvegarde des nouvelles légendes...");
+      await Legend.insertMany(legends);
+      console.log(`✅ ${legends.length} légendes sauvegardées en base`);
+    }
 
     mongoose.connection.close();
     console.log("✅ Connexion MongoDB fermée");
   } catch (err) {
     console.error("❌ Erreur:", err);
+    process.exit(1);
   }
 }
 
