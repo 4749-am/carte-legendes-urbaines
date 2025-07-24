@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// ✅ Correction des icônes Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -40,25 +41,13 @@ onMounted(async () => {
     const lat = legend.latitude || 48.8566;
     const lon = legend.longitude || 2.3522;
 
-    // ✅ Image si dispo, sinon placeholder
-    const imageHtml = legend.image
-      ? `<img src="${legend.image}" alt="${legend.title}" style="width:100%;border-radius:8px;margin-bottom:8px;"/>`
-      : "";
-
-    // ✅ Résumé (couper s'il est trop long)
-    const shortDesc = legend.description
-      ? legend.description.slice(0, 200) + (legend.description.length > 200 ? "…" : "")
-      : "Pas de résumé disponible.";
-
     const popupContent = `
       <div style="font-family: Arial, sans-serif; max-width: 250px;">
         <strong style="font-size: 1.1em; color: #222;">${legend.title}</strong><br/>
-        ${imageHtml}
-        <p style="font-size: 0.9em; color: #555; line-height:1.3em;">
-          ${shortDesc}
-        </p>
+        ${legend.image ? `<img src="${legend.image}" style="width:100%; margin:5px 0; border-radius:8px;" />` : ""}
+        <p style="font-size: 0.9em; color: #555;">${legend.description || "Aucune description disponible."}</p>
         <a href="${legend.source}" target="_blank" style="color: #007bff; text-decoration: none;">
-          🔗 Lire l'article complet
+          Voir sur Wikipédia
         </a>
       </div>
     `;
