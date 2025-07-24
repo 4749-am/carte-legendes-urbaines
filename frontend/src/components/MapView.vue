@@ -1,9 +1,9 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Import des icônes Leaflet (sinon bug sur certaines versions)
+// ✅ Correction des icônes Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -12,30 +12,41 @@ delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+  shadowUrl: markerShadow
 });
 
-// ✅ Variables réactives
-const legends = ref([]); // on stockera les légendes ici
+// ✅ Données réactives
+const legends = ref([]);
+
+// ✅ Charger les légendes depuis l’API backend
+async function fetchLegends() {
+  try {
+    const response = await fetch("http://localhost:5000/api/legends");
+    legends.value = await response.json();
+    console.log(`✅ ${legends.value.length} légendes récupérées`);
+  } catch (error) {
+    console.error("❌ Erreur lors de la récupération des légendes :", error);
+  }
+}
 
 onMounted(async () => {
-  // 1️⃣ Créer la carte centrée sur la France
+  // Charger les données depuis le backend
+  await fetchLegends();
+
+  // Initialiser la carte centrée sur la France
   const map = L.map("map").setView([46.603354, 1.888334], 6);
 
-  // 2️⃣ Ajouter la couche OpenStreetMap
+  // Fond de carte OpenStreetMap
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  // 3️⃣ Récupérer les légendes depuis l’API backend
-  const res = await fetch("http://localhost:5000/api/legends");
-  legends.value = await res.json();
-
-  // 4️⃣ Pour chaque légende → ajouter un marker
+  // Ajouter un marqueur par légende
   legends.value.forEach((legend) => {
-    // Pour l’instant, elles n’ont pas de latitude/longitude, donc on les place à Paris
-    const lat = 48.8566;
-    const lon = 2.3522;
+    // ✅ Si pas encore géocodée, on la place à Paris par défaut
+    const lat = legend.latitude || 48.8566;
+    const lon = legend.longitude || 2.3522;
 
     L.marker([lat, lon])
       .addTo(map)
