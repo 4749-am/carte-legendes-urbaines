@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 
 const legendSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String },
-  source: { type: String },
-  latitude: { type: Number, default: 48.8566 },  // Paris par défaut
-  longitude: { type: Number, default: 2.3522 }
+  description: { type: String },   // résumé Wikipédia
+  source: { type: String },        // lien vers la page Wikipédia
+  image: { type: String },         // URL de la vignette Wikipédia
+  latitude: { type: Number },
+  longitude: { type: Number }
 });
 
 export default mongoose.model("Legend", legendSchema);
