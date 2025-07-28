@@ -1,3 +1,5 @@
+/*En attente d'ajustement
+
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import axios from "axios";
@@ -68,3 +70,5 @@ async function runGeocoding() {
 }
 
 runGeocoding();
+
+Fichier à ajuster ou à supprimer */ 
