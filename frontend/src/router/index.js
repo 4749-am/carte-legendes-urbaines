@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import Splash from '../views/Splash.vue'
+import HomeView from '@/views/HomeView.vue'
+import AboutView from '@/views/AboutView.vue'
+import AddLegendView from '@/views/AddLegendView.vue'
 
 const routes = [
-  { path: '/', redirect: '/splash' },
-  { path: '/splash', component: Splash },
-  { path: '/home', component: HomeView },
-  { path: '/about', component: AboutView },
+  { path: '/', name: 'home', component: HomeView },
+  { path: '/about', name: 'about', component: AboutView },
+  { path: '/add', name: 'add', component: AddLegendView }
 ]
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
+
+export default router

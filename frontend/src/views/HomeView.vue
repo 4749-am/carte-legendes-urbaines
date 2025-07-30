@@ -1,108 +1,123 @@
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import MapView from '@/components/MapView.vue'
 
-function submitForm() {
-  alert('Formulaire soumis !')
+const mapRef = ref(null)
+const legends = ref([])
+const router = useRouter()
+
+function onLegendsLoaded(data) {
+  legends.value = data
+}
+
+function goToLegend(id) {
+  mapRef.value?.centerOnLegend(id)
+}
+
+function addLegend() {
+  router.push('/add')
 }
 </script>
 
 <template>
-  <div class="home-container">
-    <!-- TITRE PRINCIPAL -->
-    <h1 class="page-title">Carte des légendes urbaines</h1>
+  <div class="container">
+    <h1 class="title">Carte des légendes urbaines</h1>
 
-    <!-- Mise en page en deux colonnes -->
     <div class="columns">
-      <!-- Colonne gauche : Carte -->
       <div class="left">
-        <MapView />
+        <MapView ref="mapRef" @legends-ready="onLegendsLoaded" />
+        <button class="add-button" @click="addLegend">➕ Ajouter une légende</button>
       </div>
 
-      <!-- Colonne droite : Formulaire -->
       <div class="right">
-        <h2 class="form-title">Ajoutez une légende</h2>
-        <form @submit.prevent="submitForm">
-          <label for="title">Titre</label>
-          <input id="title" type="text" placeholder="Titre de la légende" />
-
-          <label for="desc">Description</label>
-          <textarea id="desc" placeholder="Détails..."></textarea>
-
-          <button type="submit">Enregistrer</button>
-        </form>
+        <h2 class="list-title">Légendes</h2>
+        <ul class="legend-list">
+          <li
+            v-for="legend in legends"
+            :key="legend.id"
+            @click="goToLegend(legend.id)"
+          >
+            <strong>{{ legend.title }}</strong><br />
+            <small>{{ legend.description?.slice(0, 60) }}...</small>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.home-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  width: 100%;
+.container {
   max-width: 1280px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
-/* Titre principal */
-.page-title {
+.title {
   text-align: center;
   font-size: 2rem;
-  margin-top: -8rem;
   margin-bottom: 2rem;
 }
 
-/* Mise en page en deux colonnes */
 .columns {
   display: grid;
-  grid-template-columns: 5fr 2fr;
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
-  align-items: stretch;
 }
 
 .left {
-  height: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .right {
-  background: var(--color-background-soft);
+  background: #f9f9f9;
   padding: 1rem;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
+  border-radius: 15px; /* ✅ coins arrondis */
+  max-height: 500px;
+  overflow-y: auto;
 }
 
-/* Titre du formulaire */
-.form-title {
+.list-title {
   margin-bottom: 1rem;
-  font-size: 1.5rem;
 }
 
-.right form {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: 0.5rem;
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 10px; /* ✅ coins arrondis */
+  overflow: hidden;
+  border: 1px solid #ddd;
 }
 
-input,
-textarea {
+.legend-list li {
   padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
-  width: 100%;
-  resize: vertical;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  background: white;
+  transition: background 0.2s;
 }
 
-button {
+.legend-list li:hover {
+  background: #e3f2fd;
+}
+
+.legend-list li:last-child {
+  border-bottom: none;
+}
+
+.add-button {
   background: #2196f3;
   color: white;
+  padding: 0.75rem;
   border: none;
-  padding: 0.5rem;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-top: auto; /* pousse le bouton en bas */
+  font-weight: bold;
+  font-size: 1rem;
+  width: 100%;
 }
 </style>

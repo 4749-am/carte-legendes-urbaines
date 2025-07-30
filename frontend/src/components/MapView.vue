@@ -1,60 +1,68 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { ref, onMounted, defineExpose, defineEmits } from 'vue'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
-// ✅ Correction des icônes Leaflet
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 
-delete L.Icon.Default.prototype._getIconUrl;
+delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow
-});
+})
 
-const legends = ref([]);
+const emit = defineEmits(['legends-ready'])
+
+const map = ref(null)
+const markers = ref([])
 
 async function fetchLegends() {
   try {
-    const response = await fetch("http://localhost:5000/api/legends");
-    legends.value = await response.json();
-    console.log(`✅ ${legends.value.length} légendes récupérées`);
-  } catch (error) {
-    console.error("❌ Erreur lors de la récupération des légendes :", error);
+    const res = await fetch('http://localhost:5000/api/legends')
+    const legends = await res.json()
+
+    legends.forEach((legend) => {
+      const lat = legend.latitude || 48.8566
+      const lon = legend.longitude || 2.3522
+
+      const marker = L.marker([lat, lon])
+        .addTo(map.value)
+        .bindPopup(`
+          <strong>${legend.title}</strong><br/>
+          ${legend.description ? `<p>${legend.description}</p>` : ''}
+        `)
+
+      markers.value.push({ id: legend.id, marker })
+    })
+
+    emit('legends-ready', legends)
+  } catch (err) {
+    console.error('Erreur de chargement des légendes', err)
   }
 }
 
-onMounted(async () => {
-  await fetchLegends();
+function centerOnLegend(id) {
+  const entry = markers.value.find(m => m.id === id)
+  if (entry) {
+    map.value.setView(entry.marker.getLatLng(), 10)
+    entry.marker.openPopup()
+  }
+}
 
-  const map = L.map("map").setView([46.603354, 1.888334], 6);
+defineExpose({ centerOnLegend })
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+onMounted(() => {
+  map.value = L.map('map').setView([46.6, 1.88], 6)
 
-  legends.value.forEach((legend) => {
-    const lat = legend.latitude || 48.8566;
-    const lon = legend.longitude || 2.3522;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map.value)
 
-    const popupContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 250px;">
-        <strong style="font-size: 1.1em; color: #222;">${legend.title}</strong><br/>
-        ${legend.image ? `<img src="${legend.image}" style="width:100%; margin:5px 0; border-radius:8px;" />` : ""}
-        <p style="font-size: 0.9em; color: #555;">${legend.description || "Aucune description disponible."}</p>
-        <a href="${legend.source}" target="_blank" style="color: #007bff; text-decoration: none;">
-          Voir sur Wikipédia
-        </a>
-      </div>
-    `;
-
-    L.marker([lat, lon]).addTo(map).bindPopup(popupContent);
-  });
-});
+  fetchLegends()
+})
 </script>
 
 <template>
@@ -63,8 +71,8 @@ onMounted(async () => {
 
 <style scoped>
 #map {
-  height: 100%;
   width: 100%;
+  height: 500px;
   border-radius: 15px;
 }
 </style>
