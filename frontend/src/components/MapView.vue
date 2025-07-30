@@ -62,8 +62,8 @@ onMounted(async () => {
   markers.value = [] // Reset les anciens marqueurs au cas où
 
   legends.value.forEach((legend) => {
-    const lat = legend.latitude || 48.8566
-    const lon = legend.longitude || 2.3522
+    const lat = legend.latitude
+    const lon = legend.longitude
 
     const popupContent = `
       <div style="font-family: Arial; max-width: 250px;">

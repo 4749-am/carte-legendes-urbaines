@@ -124,7 +124,7 @@ function toggleModal() {
 }
 
 .legend-list li:hover {
-  background: #2196f3;
+  background: lightskyblue;
   color: white;
 }
 
