@@ -43,7 +43,7 @@ function toggleModal() {
               :key="legend.id"
               @click="goToLegend(legend.id)"
             >
-              <strong>{{ legend.title }}</strong><br />
+              <strong style="color: orange">{{ legend.title }}</strong><br />
               <small>{{ legend.description?.slice(0, 50) }}...</small>
             </li>
           </ul>
@@ -141,7 +141,7 @@ function toggleModal() {
   background-color: #2196f3;
   color: white;
   cursor: pointer;
-  align-self: flex-start;
+  align-items: center;
   transition: background 0.3s;
 }
 

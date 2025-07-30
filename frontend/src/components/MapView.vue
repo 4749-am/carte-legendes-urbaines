@@ -48,7 +48,7 @@ function centerOnLegend(id) {
 onMounted(async () => {
   await fetchLegends()
 
-  map.value = L.map('map').setView([46.6, 1.88], 6)
+  map.value = L.map('map').setView([46.6, 1.88], 2)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -67,7 +67,7 @@ onMounted(async () => {
 
     const popupContent = `
       <div style="font-family: Arial; max-width: 250px;">
-        <strong style="font-size: 1.1em;">${legend.title}</strong><br/>
+        <strong style="font-size: 1.1em; color: orange">${legend.title}</strong><br/>
         ${legend.image ? `<img src="${legend.image}" style="width:100%; margin:8px 0; border-radius:8px;" />` : ''}
         <p style="font-size: 0.9em; color: #333;">${legend.description || 'Pas de description.'}</p>
         ${
