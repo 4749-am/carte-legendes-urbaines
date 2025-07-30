@@ -40,6 +40,8 @@ function centerOnLegend(id) {
   if (found) {
     map.value.setView(found.marker.getLatLng(), 10)
     found.marker.openPopup()
+  } else {
+    console.warn(`Aucun marqueur trouvé pour l'id ${id}`)
   }
 }
 
@@ -52,18 +54,28 @@ onMounted(async () => {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map.value)
 
-  // 🛠 Correction bug de taille
+  // Correction bug de taille
   setTimeout(() => {
     map.value.invalidateSize()
   }, 300)
+
+  markers.value = [] // Reset les anciens marqueurs au cas où
 
   legends.value.forEach((legend) => {
     const lat = legend.latitude || 48.8566
     const lon = legend.longitude || 2.3522
 
     const popupContent = `
-      <strong>${legend.title}</strong><br/>
-      <p>${legend.description || 'Pas de description.'}</p>
+      <div style="font-family: Arial; max-width: 250px;">
+        <strong style="font-size: 1.1em;">${legend.title}</strong><br/>
+        ${legend.image ? `<img src="${legend.image}" style="width:100%; margin:8px 0; border-radius:8px;" />` : ''}
+        <p style="font-size: 0.9em; color: #333;">${legend.description || 'Pas de description.'}</p>
+        ${
+          legend.source && legend.source.startsWith('http')
+            ? `<a href="${legend.source}" target="_blank" style="color: #007bff; text-decoration: none;">Voir sur Wikipédia</a>`
+            : ''
+        }
+      </div>
     `
 
     const leafletMarker = L.marker([lat, lon])

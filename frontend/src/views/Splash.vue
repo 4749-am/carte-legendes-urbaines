@@ -17,7 +17,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-const words = ['Légendes', 'Mythes', 'Phénomènes étranges', 'Créatures bizarres']
+const words = ['Légendes', 'Mythes', 'Phénomènes étranges', 'Créatures bizarres', 'Réalité ?']
 const visibleWords = ref([])
 const positions = ref([])
 const router = useRouter()
