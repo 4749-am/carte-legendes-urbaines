@@ -28,12 +28,12 @@ function submitForm() {
   flex-direction: column;
   height: 100%;
   min-height: 450px; /* stabilise la hauteur */
+  color: black;
 }
 
 .legend-form h2 {
   margin: 0 0 1rem 0;
-  display: block !important;  /* force l'affichage */
-  opacity: 1 !important;      /* visible */
+  text-align: center;
 }
 
 

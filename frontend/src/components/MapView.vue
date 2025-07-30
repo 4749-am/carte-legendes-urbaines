@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, defineExpose, defineEmits } from 'vue'
+import { ref, onMounted } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+// Fix icônes Leaflet
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
@@ -14,55 +15,69 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow
 })
 
-const emit = defineEmits(['legends-ready'])
-
+// Refs
 const map = ref(null)
 const markers = ref([])
+const legends = ref([])
 
+// Events
+const emit = defineEmits(['legends-ready'])
+
+// Récupérer légendes
 async function fetchLegends() {
   try {
     const res = await fetch('http://localhost:5000/api/legends')
-    const legends = await res.json()
-
-    legends.forEach((legend) => {
-      const lat = legend.latitude || 48.8566
-      const lon = legend.longitude || 2.3522
-
-      const marker = L.marker([lat, lon])
-        .addTo(map.value)
-        .bindPopup(`
-          <strong>${legend.title}</strong><br/>
-          ${legend.description ? `<p>${legend.description}</p>` : ''}
-        `)
-
-      markers.value.push({ id: legend.id, marker })
-    })
-
-    emit('legends-ready', legends)
+    legends.value = await res.json()
+    emit('legends-ready', legends.value)
   } catch (err) {
-    console.error('Erreur de chargement des légendes', err)
+    console.error('Erreur API :', err)
   }
 }
 
+// Fonction exposée
 function centerOnLegend(id) {
-  const entry = markers.value.find(m => m.id === id)
-  if (entry) {
-    map.value.setView(entry.marker.getLatLng(), 10)
-    entry.marker.openPopup()
+  const found = markers.value.find((m) => m.id === id)
+  if (found) {
+    map.value.setView(found.marker.getLatLng(), 10)
+    found.marker.openPopup()
   }
 }
 
-defineExpose({ centerOnLegend })
+onMounted(async () => {
+  await fetchLegends()
 
-onMounted(() => {
   map.value = L.map('map').setView([46.6, 1.88], 6)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map.value)
 
-  fetchLegends()
+  // 🛠 Correction bug de taille
+  setTimeout(() => {
+    map.value.invalidateSize()
+  }, 300)
+
+  legends.value.forEach((legend) => {
+    const lat = legend.latitude || 48.8566
+    const lon = legend.longitude || 2.3522
+
+    const popupContent = `
+      <strong>${legend.title}</strong><br/>
+      <p>${legend.description || 'Pas de description.'}</p>
+    `
+
+    const leafletMarker = L.marker([lat, lon])
+      .addTo(map.value)
+      .bindPopup(popupContent)
+
+    markers.value.push({
+      id: legend.id,
+      marker: leafletMarker
+    })
+  })
 })
+
+defineExpose({ centerOnLegend })
 </script>
 
 <template>
@@ -71,8 +86,8 @@ onMounted(() => {
 
 <style scoped>
 #map {
-  width: 100%;
   height: 500px;
-  border-radius: 15px;
+  width: 100%;
+  border-radius: 12px;
 }
 </style>
