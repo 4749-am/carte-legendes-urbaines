@@ -22,11 +22,12 @@ function toggleModal() {
 
 <template>
   <div class="home-container">
-    <h1 class="page-title">Carte des légendes urbaines</h1>
+    
 
     <div class="columns">
       <!-- Colonne carte -->
       <div class="left">
+      <h1 class="page-title">Carte des légendes urbaines</h1>
         <MapView ref="mapRef" @legends-ready="onLegendsLoaded" />
         <button class="form-button" @click="toggleModal">
           ➕ Ajouter une légende
@@ -76,7 +77,7 @@ function toggleModal() {
 
 .columns {
   display: grid;
-  grid-template-columns: 5fr 2fr;
+  grid-template-columns: 5fr 2.5fr;
   gap: 2rem;
 }
 
@@ -91,6 +92,7 @@ function toggleModal() {
   padding: 1rem;
   border-radius: 12px;
   height: fit-content;
+  margin-top: 110px;
 }
 
 .list-title {
