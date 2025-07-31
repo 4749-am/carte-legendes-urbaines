@@ -98,7 +98,7 @@ defineExpose({ centerOnLegend })
 
 <style scoped>
 #map {
-  height: 500px;
+  height: 600px;
   width: 100%;
   border-radius: 12px;
 }
