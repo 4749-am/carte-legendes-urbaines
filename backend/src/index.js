@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import legendRoutes from "./routes/legendRoutes.js"; 
 import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes API
 app.use("/api/users", authRoutes);           // Inscription / Connexion
 app.use("/api/legends", legendRoutes);       // Légendes
+app.use('/api/admin', adminRoutes);
 
 // Test route
 app.get("/api/test", (req, res) => {
