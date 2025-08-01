@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
+import authMiddleware from '../middlewares/auth.js';
 
 dotenv.config(); // Assure-toi que .env est chargé
 
@@ -54,6 +55,18 @@ router.post('/login', async (req, res) => {
     res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// ✅ Obtenir les infos de l'utilisateur connecté : GET /api/users/profile
+router.get('/profile', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password') // sans mot de passe
+    if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' })
+
+    res.status(200).json(user)
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur' })
   }
 });
 
