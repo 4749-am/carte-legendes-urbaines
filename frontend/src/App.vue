@@ -18,13 +18,12 @@ function logout() {
     <div class="nav-center">
       <RouterLink to="/">Accueil</RouterLink>
       <RouterLink to="/about">A propos</RouterLink>
-      <RouterLink to="/add" v-if="userStore.user">Ajouter une légende</RouterLink>
     </div>
 
     <div class="nav-right">
       <!-- Si utilisateur non connecté -->
       <RouterLink v-if="!userStore.user" to="/connexion">
-        <button class="login-btn">Connexion</button>
+      <button class="login-btn">Connexion / Inscription</button>
       </RouterLink>
 
       <!-- Si connecté -->

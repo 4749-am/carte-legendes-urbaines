@@ -49,6 +49,10 @@ async function register() {
   gap: 1rem;
 }
 
+.register-page h2 {
+  color: black !important;
+}
+
 .register-form input {
   padding: 0.6rem;
   border-radius: 5px;

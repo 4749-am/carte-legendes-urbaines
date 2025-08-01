@@ -2,17 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Splash from '@/views/Splash.vue'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
-import AddLegendView from '@/views/AddLegendView.vue'
 import { useUserStore } from '@/stores/user'
+import RegisterView from '@/views/RegisterView.vue'
+import AdminView from '@/views/AdminView.vue'
+import LoginView from '@/views/LoginView.vue'
 
 const routes = [
   { path: '/', name: 'splash', component: Splash},
   { path: '/home', name: 'home', component: HomeView },
   { path: '/about', name: 'about', component: AboutView },
-  { path: '/add', name: 'add', component: AddLegendView },
-  { path: '/connexion', name: 'Login', component: () => import('@/views/LoginView.vue')},
-  { path: '/admin', name: 'Admin', component: () => import('@/views/AdminView.vue')},
-  { path: '/register', name: 'Register', component: () => import('@/views/RegisterView.vue')}
+  { path: '/connexion', name: 'Login', component: LoginView},
+  { path: '/admin', name: 'Admin', component:AdminView},
+  { path: '/register', name: 'Register', component: RegisterView}
 ]
 
 const router = createRouter({

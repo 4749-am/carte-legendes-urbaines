@@ -2,10 +2,22 @@
 import { ref } from 'vue'
 import MapView from '@/components/MapView.vue'
 import LegendForm from '@/components/LegendForm.vue'
+import { useUserStore } from '@/stores/user'
 
 const mapRef = ref(null)
 const showModal = ref(false)
 const legends = ref([])
+const userStore = useUserStore()
+const toastMessage = ref('')
+const showToast = ref(false)
+
+function showToastMessage(message) {
+  toastMessage.value = message
+  showToast.value = true
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
 
 function onLegendsLoaded(loaded) {
   legends.value = loaded
@@ -16,8 +28,13 @@ function goToLegend(id) {
 }
 
 function toggleModal() {
+  if (!userStore.user) {
+    showToastMessage("Veuillez vous connecter pour ajouter une légende.")
+    return
+  }
   showModal.value = !showModal.value
 }
+
 </script>
 
 <template>
@@ -58,6 +75,11 @@ function toggleModal() {
       </div>
     </div>
   </div>
+
+  <div v-if="showToast" class="toast">
+  {{ toastMessage }}
+  </div>
+
 </template>
 
 <style scoped>
@@ -184,4 +206,27 @@ function toggleModal() {
   cursor: pointer;
   color: #333;
 }
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 9999;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+  @keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
 </style>

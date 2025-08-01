@@ -37,6 +37,7 @@ async function login() {
       <input type="password" v-model="password" placeholder="Mot de passe" required />
 
       <button type="submit">Se connecter</button>
+      <router-link to="/register">Pas encore de compte ? S'inscrire</router-link>
 
       <p class="error" v-if="error">{{ error }}</p>
     </form>
