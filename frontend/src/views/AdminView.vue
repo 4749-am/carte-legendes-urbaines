@@ -39,6 +39,10 @@ onMounted(() => {
   padding: 1rem;
 }
 
+.admin-view h2 {
+  color: white !important;
+}
+
 .pending-list {
   list-style: none;
   padding: 0;
@@ -52,5 +56,6 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: black;
 }
 </style>
